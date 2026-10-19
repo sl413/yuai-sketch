@@ -13,6 +13,12 @@
 | 水印 | 无 |
 | 风格 | Lemo-Opuscar「Urban Sketch · Pen & Wash 钢笔淡彩」 |
 
+## 预览
+
+[▶ 静音预览 720p（preview.mp4，约 18 MB）](preview.mp4)
+
+![海报：片名与窗边](poster.jpg)
+
 ## 怎么看
 
 - 直接播放 `yuai-sketch.mp4`；海报 `poster.jpg`（第 3.6 s 的片名与窗边：雨爱 / 信 / 干花 / 远城）。
