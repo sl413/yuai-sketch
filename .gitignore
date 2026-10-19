@@ -1,0 +1,14 @@
+# 渲染中间物（视频分段、评审静帧、接触表）
+out/
+# 音频分析产物（可复现）
+tools/audio/out/
+# 版权音轨：不随仓库分发，请自备《雨爱》音轨放到 assets/song.m4a
+assets/song.m4a
+assets/song.wav
+assets/song-22k.wav
+# 成片高码率母版不放进 git（用 build.ps1 重新渲染）
+yuai-sketch.mp4
+*.new.mp4
+# 系统文件
+.DS_Store
+Thumbs.db

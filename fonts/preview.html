@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Yuai MV - offline font load self-test</title>
+<link rel="stylesheet" href="./fonts.css">
+<style>
+  html, body { margin: 0; }
+  body { background: #f5eede; color: #3a342c; padding: 26px 36px;
+         font-family: "Microsoft YaHei", "PingFang SC", sans-serif; }
+  h1 { font-size: 24px; margin: 0 0 4px; font-weight: 700; }
+  .hint { font-size: 13px; color: #7a6f60; margin-bottom: 12px; }
+  #result { font: 14px/1.55 Consolas, "Courier New", monospace; white-space: pre-wrap;
+            background: #faf5ea; border: 1px solid #d8cab5; padding: 10px 14px; margin: 0 0 14px; }
+  #result.ok { color: #1b6b32; }
+  #result.bad { color: #a11; }
+  .samples { border-top: 1px solid #d8cab5; padding-top: 10px; }
+  .sample { font-size: 46px; line-height: 1.42; margin: 2px 0; }
+  .tag { font: 13px/1.3 Consolas, monospace; color: #7a6f60; margin-top: 8px; }
+  .rec   { font-family: "Caveat", "Ma Shan Zheng", "Microsoft YaHei", sans-serif; }
+  .engine{ font-family: "Ma Shan Zheng", "Caveat", "KaiTi", serif; }  /* 页面实际写法：中文字体在前 */
+  .cjk   { font-family: "Ma Shan Zheng", "Microsoft YaHei", sans-serif; }
+  .zhi   { font-family: "Zhi Mang Xing", "Microsoft YaHei", sans-serif; }
+  .long  { font-family: "Long Cang", "Microsoft YaHei", sans-serif; }
+  .cav   { font-family: "Caveat", sans-serif; }
+  .reen  { font-family: "Reenie Beanie", sans-serif; }
+</style>
+</head>
+<body>
+<h1>《雨爱》MV 离线字体加载自检</h1>
+<div class="hint">file:// 或 http://127.0.0.1 均可 · 不联网 · 结果行只输出 ASCII 便于抓取</div>
+<div id="result">pending</div>
+
+<div class="samples">
+  <div class="tag">recommended chain: "Caveat", "Ma Shan Zheng"</div>
+  <div class="sample rec">我爱上给我勇气的 Rainie Love — 46px</div>
+  <div class="tag">page chain (CJK first, engine.js style): "Ma Shan Zheng", "Caveat", "KaiTi", serif</div>
+  <div class="sample engine">我爱上给我勇气的 Rainie Love — 46px</div>
+  <div class="tag">Ma Shan Zheng only</div>
+  <div class="sample cjk">你的呼吸像雨滴渗入我的爱里</div>
+  <div class="tag">Zhi Mang Xing</div>
+  <div class="sample zhi">你的呼吸像雨滴渗入我的爱里</div>
+  <div class="tag">Long Cang</div>
+  <div class="sample long">你的呼吸像雨滴渗入我的爱里</div>
+  <div class="tag">Caveat 600</div>
+  <div class="sample cav">Rainie &amp; Love....?</div>
+  <div class="tag">Reenie Beanie 400</div>
+  <div class="sample reen">Rainie &amp; Love....?</div>
+</div>
+
+<script>
+(async function () {
+  var lines = [];
+  var CN = "你的呼吸像雨滴渗入我的爱里";
+  var EN = "Rainie Love";
+  var EN2 = "RainieLove";  // 无空格版本: 空格 U+0020 被故意划给中文字体(中文排版习惯), 用它验证字母归属
+  function measure(font, text) {
+    var ctx = document.createElement("canvas").getContext("2d");
+    ctx.font = font;
+    return Math.round(ctx.measureText(text).width * 100) / 100;
+  }
+  // 汉字是全角 1em, 三个手写体的"宽度"可能相同(Ma Shan Zheng 与 Long Cang 都是 1000/1000 em),
+  // 所以用画布像素签名(轮廓哈希 + 墨点数)来证明"确实是各自的字形在渲染", 而不是同一个 fallback。
+  function pixelSignature(font, text) {
+    var c = document.createElement("canvas");
+    c.width = 1000;
+    c.height = 140;
+    var ctx = c.getContext("2d");
+    ctx.font = font;
+    ctx.fillStyle = "#000";
+    ctx.textBaseline = "top";
+    ctx.fillText(text, 8, 8);
+    var d = ctx.getImageData(0, 0, c.width, c.height).data;
+    var h = 0;
+    var ink = 0;
+    for (var i = 0; i < d.length; i += 4) {
+      var a = d[i + 3];
+      if (a > 0) { ink++; }
+      h = (h * 31 + a) >>> 0;
+    }
+    return h + ":" + ink;
+  }
+  var families = ["Ma Shan Zheng", "Zhi Mang Xing", "Long Cang", "Caveat", "Reenie Beanie"];
+  var ok = true;
+  if (document.fonts && document.fonts.ready) { await document.fonts.ready; }
+  for (var i = 0; i < families.length; i++) {
+    var f = families[i];
+    var faces = [];
+    try { faces = await document.fonts.load('46px "' + f + '"', CN + EN); } catch (e) { faces = []; }
+    var loaded = faces.length > 0;
+    for (var j = 0; j < faces.length; j++) { loaded = loaded && faces[j].status === "loaded"; }
+    var chk = document.fonts.check('46px "' + f + '"', CN + EN);
+    ok = ok && loaded && chk;
+    lines.push((loaded && chk ? "[PASS] " : "[FAIL] ") + "face " + f +
+               "  files=" + faces.length + " status=" + (loaded ? "loaded" : "not-loaded") +
+               " check=" + chk);
+  }
+  var w = {
+    cn_ma: measure('46px "Ma Shan Zheng"', CN),
+    cn_zhi: measure('46px "Zhi Mang Xing"', CN),
+    cn_long: measure('46px "Long Cang"', CN),
+    cn_sans: measure('46px sans-serif', CN),
+    en_cav: measure('46px "Caveat"', EN),
+    en_reen: measure('46px "Reenie Beanie"', EN),
+    en_ma: measure('46px "Ma Shan Zheng"', EN),
+    mix_en: measure('46px "Caveat", "Ma Shan Zheng"', EN),
+    mix_cn: measure('46px "Caveat", "Ma Shan Zheng"', CN),
+    mix2_en: measure('46px "Ma Shan Zheng", "Caveat"', EN),
+    mix2_cn: measure('46px "Ma Shan Zheng", "Caveat"', CN),
+    en_cav_ns: measure('46px "Caveat"', EN2),
+    mix2_en_ns: measure('46px "Ma Shan Zheng", "Caveat"', EN2)
+  };
+  var sig = {
+    ma: pixelSignature('46px "Ma Shan Zheng"', CN),
+    zhi: pixelSignature('46px "Zhi Mang Xing"', CN),
+    long: pixelSignature('46px "Long Cang"', CN),
+    sans: pixelSignature('46px sans-serif', CN)
+  };
+  lines.push("");
+  lines.push("width-CN  ma=" + w.cn_ma + " zhi=" + w.cn_zhi + " long=" + w.cn_long + " sans=" + w.cn_sans);
+  lines.push("width-EN  caveat=" + w.en_cav + " reenie=" + w.en_reen + " ma=" + w.en_ma);
+  lines.push("width-MIX en=" + w.mix_en + " cn=" + w.mix_cn);
+  lines.push("width-MIX2(CJK-first) en=" + w.mix2_en + " cn=" + w.mix2_cn +
+             "  [space owned by CJK font, hence 1.38px narrower]");
+  lines.push("width-MIX2b no-space en=" + w.mix2_en_ns + " vs caveat=" + w.en_cav_ns);
+  lines.push("pixelsig  ma=" + sig.ma + " zhi=" + sig.zhi + " long=" + sig.long + " sans=" + sig.sans);
+  var distinctCN = (new Set([sig.ma, sig.zhi, sig.long, sig.sans])).size === 4;
+  var fallbackEN = Math.abs(w.mix_en - w.en_cav) < 0.6;
+  var fallbackCN = Math.abs(w.mix_cn - w.cn_ma) < 0.6;
+  var fallbackEN2 = Math.abs(w.mix2_en_ns - w.en_cav_ns) < 0.6;
+  var fallbackCN2 = Math.abs(w.mix2_cn - w.cn_ma) < 0.6;
+  ok = ok && distinctCN && fallbackEN && fallbackCN && fallbackEN2 && fallbackCN2;
+  lines.push((distinctCN ? "[PASS] " : "[FAIL] ") + "3 CJK faces render distinct glyph pixels (not a shared fallback)");
+  lines.push((fallbackEN ? "[PASS] " : "[FAIL] ") + "EN in chain falls back to Caveat");
+  lines.push((fallbackCN ? "[PASS] " : "[FAIL] ") + "CN in chain falls through to Ma Shan Zheng");
+  lines.push((fallbackEN2 ? "[PASS] " : "[FAIL] ") + "EN still uses Caveat when CJK font is FIRST (unicode-range)");
+  lines.push((fallbackCN2 ? "[PASS] " : "[FAIL] ") + "CN still uses Ma Shan Zheng when CJK font is first");
+  lines.push("");
+  lines.push(ok ? "RESULT: ALL_PASS" : "RESULT: FAIL");
+  var el = document.getElementById("result");
+  el.className = ok ? "ok" : "bad";
+  el.textContent = lines.join("\n");
+  document.title = ok ? "FONT_CHECK_ALL_PASS" : "FONT_CHECK_FAIL";
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+/* =============================================================================
+   《雨爱》MV · 离线自托管手写字体表
+   -----------------------------------------------------------------------------
+   来源   : Google Fonts (github.com/google/fonts) — 全部 SIL Open Font License 1.1
+   子集   : 字符集见 ./charset.txt (413 字符 = data/lyrics-source.txt 全部字符
+            160 字 + 片名「雨爱」/ Rainie Love / 预览标注 / ASCII / 常用标点)
+   体积   : woff2 合计 ≈ 409 KB；ttf 合计 ≈ 741 KB（仅 Pillow/本地工具备用）
+   离线   : 渲染期不联网。所有 src 均为相对路径，file:// 与 http://localhost 均可用
+   用法   : <link rel="stylesheet" href="fonts/fonts.css">
+   -----------------------------------------------------------------------------
+   推荐用法（详见 README.md）：
+
+     混排（拉丁字体放链首，英文/数字用 Caveat、中文自动落到马善政）：
+       .subtitle { font-family: "Caveat", "Ma Shan Zheng", "Microsoft YaHei", sans-serif; }
+
+     纯中文（英文不参与混排）：
+       .subtitle { font-family: "Ma Shan Zheng", "Microsoft YaHei", sans-serif; }
+
+   ★ 中文字体的 @font-face 用 unicode-range 只声明 CJK 区（不含 ASCII），
+     所以英文/数字无论链接顺序如何都一定会落到拉丁手写体 Caveat：
+       "Ma Shan Zheng", "Caveat" 与 "Caveat", "Ma Shan Zheng" 两种写法效果一致。
+   ============================================================================= */
+
+/* 供页面直接引用的变量 */
+:root {
+  --sub-font: "Caveat", "Ma Shan Zheng", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --sub-font-cjk: "Ma Shan Zheng", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --sub-font-en: "Caveat";           /* 英文/数字（wght 600 静态实例） */
+  --sub-font-fallback: "Microsoft YaHei", "PingFang SC", sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   一、中文手写体（CJK 子集：413 字符全覆盖，已逐个 cmap + 渲染校验）
+       unicode-range 故意不含 ASCII —— 英文/数字由拉丁手写体承担，见文件顶部说明
+   -------------------------------------------------------------------------- */
+
+/* 马善政 Ma Shan Zheng —— 硬笔楷书手写，结构清楚、可读性最佳
+   推荐作为歌词正文（46px / 40px） */
+@font-face {
+  font-family: "Ma Shan Zheng";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  unicode-range: U+0020, U+00D7, U+00F7, U+2014, U+2018-201D, U+2026,
+                 U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
+  src: url("./MaShanZheng-subset.woff2") format("woff2"),
+       url("./MaShanZheng-subset.ttf") format("truetype");
+}
+
+/* 龙藏 Long Cang —— 行楷，笔画偏细、略带连笔
+   备用：片名/装饰字可用；正文 40px 以下不如 Ma Shan Zheng 稳 */
+@font-face {
+  font-family: "Long Cang";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  unicode-range: U+0020, U+00D7, U+00F7, U+2014, U+2018-201D, U+2026,
+                 U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
+  src: url("./LongCang-subset.woff2") format("woff2"),
+       url("./LongCang-subset.ttf") format("truetype");
+}
+
+/* 志莽行书 Zhi Mang Xing —— 行书连笔较重，长句辨识成本高
+   不建议用于正文；仅片名/章节标题等大字场景 */
+@font-face {
+  font-family: "Zhi Mang Xing";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  unicode-range: U+0020, U+00D7, U+00F7, U+2014, U+2018-201D, U+2026,
+                 U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
+  src: url("./ZhiMangXing-subset.woff2") format("woff2"),
+       url("./ZhiMangXing-subset.ttf") format("truetype");
+}
+
+/* --------------------------------------------------------------------------
+   二、拉丁手写体（ASCII 子集：英文 / 数字 / 标点；不写 unicode-range，覆盖其全部字形）
+   -------------------------------------------------------------------------- */
+
+/* Caveat —— 手写马克笔感，粗细均匀、与中文楷书手写最协调
+   wght 600 静态实例（原始为 400–700 可变字体，已固定到 600 再子集化）
+   用法上直接用 font-weight: 600 或继承（唯一字重，浏览器会用这一档） */
+@font-face {
+  font-family: "Caveat";
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url("./Caveat-subset.woff2") format("woff2"),
+       url("./Caveat-subset.ttf") format("truetype");
+}
+
+/* Reenie Beanie —— 更细更随意的记号笔手写体，Caveat 的备选
+   Regular 400 */
+@font-face {
+  font-family: "Reenie Beanie";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("./ReenieBeanie-subset.woff2") format("woff2"),
+       url("./ReenieBeanie-subset.ttf") format("truetype");
+}

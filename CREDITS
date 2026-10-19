@@ -1,0 +1,57 @@
+# CREDITS — 《雨爱》手绘 MV 素材与许可
+
+本片使用的第三方素材均已本地化，**渲染期不联网**。按素材类别分节，各节由对应负责人追加。
+
+---
+
+## 字体 Fonts
+
+字幕与片头使用以下 **SIL Open Font License 1.1 (OFL)** 字体，已本地子集化
+（字符集见 `fonts/charset.txt`，413 字符）并自托管于 `fonts/`，详细说明见 `fonts/README.md`。
+
+| 字体 | 用途 | 来源 | 许可证 | 子集 | 本地文件 |
+| --- | --- | --- | --- | --- | --- |
+| 马善政 Ma Shan Zheng v2.003 | 歌词正文（推荐） | [Google Fonts](https://fonts.google.com/specimen/Ma+Shan+Zheng) · [google/fonts ofl/mashanzheng](https://github.com/google/fonts/tree/main/ofl/mashanzheng) | SIL OFL 1.1 | 413 字符（woff2 130.0 KB / ttf 228.0 KB） | `fonts/MaShanZheng-subset.woff2`、`fonts/MaShanZheng-subset.ttf` |
+| 龙藏 Long Cang v2.001 | 备用正文 / 片名装饰 | [Google Fonts](https://fonts.google.com/specimen/Long+Cang) · [google/fonts ofl/longcang](https://github.com/google/fonts/tree/main/ofl/longcang) | SIL OFL 1.1 | 413 字符（woff2 116.8 KB / ttf 197.2 KB） | `fonts/LongCang-subset.woff2`、`fonts/LongCang-subset.ttf` |
+| 志莽行书 Zhi Mang Xing v2.001 | 片名 / 章节装饰（不用于正文） | [Google Fonts](https://fonts.google.com/specimen/Zhi+Mang+Xing) · [google/fonts ofl/zhimangxing](https://github.com/google/fonts/tree/main/ofl/zhimangxing) | SIL OFL 1.1 | 413 字符（woff2 97.0 KB / ttf 165.0 KB） | `fonts/ZhiMangXing-subset.woff2`、`fonts/ZhiMangXing-subset.ttf` |
+| Caveat v2.000（wght 600 静态实例） | 英文 / 数字混排（Rainie Love） | [Google Fonts](https://fonts.google.com/specimen/Caveat) · [google/fonts ofl/caveat](https://github.com/google/fonts/tree/main/ofl/caveat) | SIL OFL 1.1 | 94 ASCII（woff2 44.0 KB / ttf 99.4 KB） | `fonts/Caveat-subset.woff2`、`fonts/Caveat-subset.ttf` |
+| Reenie Beanie v1.000 | 英文备选 | [Google Fonts](https://fonts.google.com/specimen/Reenie+Beanie) · [google/fonts ofl/reeniebeanie](https://github.com/google/fonts/tree/main/ofl/reeniebeanie) | SIL OFL 1.1 | 94 ASCII（woff2 21.2 KB / ttf 51.7 KB） | `fonts/ReenieBeanie-subset.woff2`、`fonts/ReenieBeanie-subset.ttf` |
+
+**版权行（随 OFL 要求保留）：**
+
+- Ma Shan Zheng：Copyright 2018 The Ma Shan Zheng Project Authors (https://github.com/googlefonts/mashanzheng)
+- Long Cang：Copyright 2018 The Long Cang Project Authors (https://github.com/googlefonts/longcang)
+- Zhi Mang Xing：Copyright 2018 The Zhi Mang Xing Project Authors (https://github.com/googlefonts/zhimangxing)
+- Caveat：Copyright 2014 The Caveat Project Authors (https://github.com/googlefonts/caveat)
+- Reenie Beanie：Copyright (c) 2010, James Grieshaber (james@typeco.com)
+
+**OFL 1.1 许可全文**：`fonts/OFL/OFL-MaShanZheng.txt`、`OFL-LongCang.txt`、`OFL-ZhiMangXing.txt`、
+`OFL-Caveat.txt`、`OFL-ReenieBeanie.txt`。子集化属于 OFL 允许的修改，版权声明与许可证随字体文件一并保留。
+
+---
+
+## 音乐 Music
+
+| 素材 | 用途 | 来源 | 说明 |
+| --- | --- | --- | --- |
+| 《雨爱》（杨丞琳） | 全片音轨 | 用户提供（`C:\Users\sl\Desktop\雨爱.mp4` → `assets/song.m4a`，AAC 流拷贝，未重编码） | 演唱：杨丞琳；作词：Wonderful；作曲：金大洲；编曲：黄宣铭；收录于《Rainie & Love....? 雨爱》；偶像剧《海派甜心》片尾曲。影片为个人创作用途使用该音频；如涉公开传播，请使用者自行确认音乐版权授权。 |
+
+本片音乐之外**没有**任何第三方音频素材：无采样库、无音效库、无旁白。
+
+## 画面引擎与工具 Tools
+
+| 工具 | 用途 | 说明 |
+| --- | --- | --- |
+| 自研 Canvas2D 渲染代码（本项目 `src/`） | 全部画面 | 钢笔墨线、淡水彩、纸纹、雨/雾/水珠、人物骨架与姿态、相机与分层视差、字幕排版，均为本项目代码按时间函数确定性生成 |
+| Lemo-Opuscar `urban-sketch` 风格引擎（MIT-style 库内代码，风格库） | 笔触/水彩/人物骨架基础函数 | 本项目在其 `demo/engine.js` 基础上二次开发（`src/engine.js`），并按用户内容重写全部场景、镜头与人物；未使用其 demo 的故事、镜头、道具或时间轴，片中无 LemoLab 署名 |
+| Lemo-Opuscar `core/render` | 渲染工具链 | headless Chromium 逐帧截图 + ffmpeg 编码；分镜时间轴与确定性渲染约定 |
+| FFmpeg 9.0.2 | 编码/合轨/海报 | 系统已装 |
+| 音频分析脚本（本项目 `tools/audio/`） | 段落检测与歌词逐句对齐 | numpy/scipy 本地计算；同版本官方歌词时间轴做先验并用本地谱图逐句核验（见 `data/audio-report.md`） |
+
+
+## 人物参考图
+
+- 人物四视图与雨伞参考图由用户提供；成片站立/行走镜头使用其透明底版本作为贴图（assets/char/）。
+- 其余场景、道具、天气、光与字幕仍由代码（Canvas 2D）逐帧绘制。
+- 整幅室内插画（assets/char/room_scene.png）亦由用户提供，用于 2.3/5.1/5.2/5.3/6.1/7.3 六个室内镜头。
+- 手部插画由用户提供（assets/char/hand.png），用于 7.5 等手部近景。
